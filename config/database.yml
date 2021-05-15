@@ -1,0 +1,26 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: anonymous_reporting_development
+  username: postgres
+  password: 1amr00t
+  host: localhost
+  port: 5432
+
+test:
+  <<: *default
+  database: anonymous_reporting_test
+  username: postgres
+  password: 1amr00t
+  host: localhost
+  port: 5432
+
+production:
+  <<: *default
+  database: anonymous_reporting_production
+  username: anonymous_reporting
+  password: <%= ENV['ANONYMOUS_REPORTING_DATABASE_PASSWORD'] %>
