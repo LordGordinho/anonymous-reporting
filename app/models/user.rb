@@ -7,6 +7,6 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable
   include DeviseTokenAuth::Concerns::User
 
-  validates_presence_of :name
+  # validates_presence_of :name
   has_many :complaints, dependent: :destroy
 end

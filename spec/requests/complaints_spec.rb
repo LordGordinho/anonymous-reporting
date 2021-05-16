@@ -182,7 +182,8 @@ RSpec.describe 'complaint API' do
     end
   end
 
-  describe 'PUT /complaints/:id/change_status' do
+  describe 'PUT /complaints/:id/change_status' doUnpermitted parameter: :name
+
     let!(:complaint) { create(:complaint, user_id: user.id) }
 
     before do
