@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'complaint API' do
+  include HTTParty
   before { host! 'localhost' }
 
   let!(:user) { create(:user) }
@@ -45,6 +46,21 @@ RSpec.describe 'complaint API' do
     end
   end
 
+  describe 'GET /complaints/search' do
+    let!(:assalto_complaint_1) { create(:complaint, description:'Assalto a mão armada', user_id: user.id) }
+    let!(:assalto_complaint_2) { create(:complaint, description:'Assalto seguido de morte', user_id: user.id) }
+    let!(:other_complaint_1) { create(:complaint, description:'Furto a mão armada', user_id: user.id) }
+    let!(:other_complaint_2) { create(:complaint, description:'Furto a mão armada', user_id: user.id) }
+
+    before do
+      get '/complaints/search?q[description_cont]=assalto', params: {}, headers: headers
+    end
+
+    it 'returns only the complaints matching' do
+      returned_complaint_descriptions = json_body[:complaints].map { |c| c[:description] }
+      expect(returned_complaint_descriptions).to eq([assalto_complaint_1.description , assalto_complaint_2.description])
+    end
+  end
 
   describe 'POST /complaints' do
     before do
@@ -53,6 +69,8 @@ RSpec.describe 'complaint API' do
 
     context 'when the params are valid' do
       let(:complaint_params) { attributes_for(:complaint) }
+      res =  HTTParty.get "http://www.mapquestapi.com/geocoding/v1/reverse?key=e7Vf7zIzBVxfiHk6gDJ0zqiol6OmMVhW&location=39.755695,-104.995986"
+      @location = JSON.parse(res.body)['results'][0]['locations'][0]
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -64,6 +82,10 @@ RSpec.describe 'complaint API' do
 
       it 'returns the json for created complaint' do
         expect(json_body[:complaint][:description]).to eq(complaint_params[:description])
+      end
+
+      it 'returns the correct addresses' do
+        expect(json_body[:complaint][:addresses]).to eq(@location)
       end
 
       it 'assigns the created complaint to the current user' do
@@ -84,6 +106,38 @@ RSpec.describe 'complaint API' do
 
       it 'returns the json error for description' do
         expect(json_body[:errors]).to have_key(:description)
+      end
+    end
+
+    context 'when when the locality is invalid' do
+      let(:complaint_params) { attributes_for(:complaint, lat:99999999, long: 9999999) }
+      
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'does not save the complaint in the database' do
+        expect( Complaint.find_by(description: complaint_params[:description]) ).to be_nil
+      end
+
+      it 'returns the json error for description' do
+        expect(json_body[:errors]).to eq('invalid locality')
+      end
+    end
+
+    context 'when lat and lat is empty' do
+      let(:complaint_params) { attributes_for(:complaint, lat: nil , long: nil ) }
+      
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+
+      it 'returns the json for created complaint' do
+        expect(json_body[:complaint][:description]).to eq(complaint_params[:description])
+      end
+
+      it 'saves the complaint in the database' do
+        expect( Complaint.find_by(description: complaint_params[:description]) ).not_to be_nil
       end
     end
   end

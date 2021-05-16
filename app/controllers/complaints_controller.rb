@@ -1,6 +1,7 @@
 class ComplaintsController < ApplicationController
 
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
+  include HTTParty
 
   def index
     complaints = Complaint.all
@@ -17,10 +18,21 @@ class ComplaintsController < ApplicationController
     end
   end
 
+  def search
+    complaints = Complaint.ransack(params[:q]).result
+    render json: { complaints: complaints}, status: 200
+  end
+
   def create
     complaint = current_user.complaints.build(complaint_params)
+    
+    res =  HTTParty.get "http://www.mapquestapi.com/geocoding/v1/reverse?key=e7Vf7zIzBVxfiHk6gDJ0zqiol6OmMVhW&location=#{complaint_params[:lat]},#{complaint_params[:long]}"
+    location = JSON.parse(res.body)
+    complaint.address = location['results'][0]['locations'][0]
 
-    if complaint.save
+    if (complaint_params[:lat] != nil && complaint_params[:long] != nil ) && (complaint.address == {} )
+      render json: { errors: 'invalid locality' }, status: 422
+    elsif complaint.save
       render json: { complaint: complaint}, status: 201
     else
       render json: { errors: complaint.errors }, status: 422
