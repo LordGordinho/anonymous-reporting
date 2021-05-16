@@ -182,11 +182,11 @@ RSpec.describe 'complaint API' do
     end
   end
 
-  describe 'POST /complaints/:id/change_status' do
+  describe 'PUT /complaints/:id/change_status' do
     let!(:complaint) { create(:complaint, user_id: user.id) }
 
     before do
-      post "/complaints/#{complaint.id}/change_status", params: { complaint: complaint_params }.to_json, headers: headers
+      put "/complaints/#{complaint.id}/change_status", params: { complaint: complaint_params }.to_json, headers: headers
     end
 
     context 'when the params are valid' do

@@ -1,6 +1,6 @@
 class ComplaintsController < ApplicationController
 
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   include HTTParty
 
   def index
