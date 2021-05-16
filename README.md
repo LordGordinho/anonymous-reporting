@@ -5,9 +5,9 @@ Os seguintes endpoints estão configurados:
 ## Usuários (auth)
 
     /auth - POST - Cria usuário ( passando os parametros: name, email, password)
-    /auth - PUT - Atualiza o usuário logado
-    /auth - DELETE - Apaga o usuário logado
     /auth/sign_in - POST - Cria a 'sessão' ( utilizando para 'logar' um usuário)
+    /auth - DELETE - Apaga o usuário logado
+    /auth - PUT - Atualiza o usuário logado
     /auth/sign_out - DELETE - Destroi a  'sessão' ( utilizando para 'deslogar' um usuário)
     /auth/password - PUT - Atualiza a senha do usuario logado ( passando os parametros: password, password_confirmation)
 
