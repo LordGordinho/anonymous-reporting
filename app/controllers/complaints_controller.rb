@@ -60,13 +60,11 @@ class ComplaintsController < ApplicationController
     end
   end
   
-  private 
-
   def complaint_params
-    params.require(:complaint).permit(:description, :status, :lat, :long)
+    params.require(:complaint).permit(:description, :lat, :long,)
   end
 
   def params_status
-    params.require(:complaint).permit(:status)
+    params.require(:complaint).permit(:status, :name)
   end
 end
