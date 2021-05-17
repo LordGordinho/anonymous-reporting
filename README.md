@@ -14,9 +14,9 @@ Os seguintes endpoints estão configurados:
 ## Denúncias (complaints)
 
     * Todos os endpoins a seguir demandam da autenticação do usuário *
-    /complaints - GET - Retorna todas as denúnicas da base de dados 
+    /complaints?page={ número da pagina }&per_page={ itens por página } - GET - Retorna todas as denúnicas da base de dados 
     /complaints/:id - GET - Mostra a denúnica do ID enviado
-    /complaints/search?q[description_cont]={ passar a palvra por qual quer buscar } - GET - Retorna todas as denúncias quais têm o parâmetro de busca desejado 
+    /complaints/search?q[description_cont]={ passar a palvra por qual quer buscar }&page={ número da pagina }&per_page={ itens por página } - GET - Retorna todas as denúncias quais têm o parâmetro de busca desejado 
     /complaints - POST - Cria uma denúncia ( parametros necessaŕios: description; parâmetros opcionas: lat, long. Por padrão sera criado uma denuncia com o status padrão de 'pending' )
     /complaints/:id - PUT - Atualiza o a denúncia do ID enviado
     /complaints/:id/change_status - PUT - Atualiza o status da denúnica do ID enviado

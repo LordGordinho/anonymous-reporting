@@ -213,7 +213,7 @@ RSpec.describe 'complaint API' do
         expect(response).to have_http_status(422)
       end
 
-      it 'returns the json error for title' do
+      it 'returns the json errors' do
         expect(json_body[:errors]).to eq('is not a valid status')
       end
 

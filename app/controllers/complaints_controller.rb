@@ -4,7 +4,7 @@ class ComplaintsController < ApplicationController
   include HTTParty
 
   def index
-    complaints = Complaint.all
+    complaints = Complaint.all.page(params[:page] || 1).per(params[:per_page] || 20)
     if complaints
       render json: { complaints: complaints }, status: 200
     end
@@ -19,7 +19,7 @@ class ComplaintsController < ApplicationController
   end
 
   def search
-    complaints = Complaint.ransack(params[:q]).result
+    complaints = Complaint.ransack(params[:q]).result.page(params[:page] || 1).per(params[:per_page] || 20)
     render json: { complaints: complaints}, status: 200
   end
 
