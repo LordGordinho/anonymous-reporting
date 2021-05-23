@@ -23,11 +23,7 @@ class ComplaintsController < ApplicationController
   end
 
   def create
-    # complaint = current_user.complaints.build(complaint_params)
-    user = User.find_by(id: 4)
-    complaint = Complaint.new(complaint_params)
-    complaint.user = user
-    byebug
+    complaint = current_user.complaints.build(complaint_params)
     complaint.address = AddressService.new({lat: complaint_params[:lat], long: complaint_params[:long] }).call
     byebug
     if (complaint_params[:lat] != nil && complaint_params[:long] != nil ) && (complaint.address == {} )
